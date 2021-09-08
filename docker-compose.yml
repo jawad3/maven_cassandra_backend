@@ -17,7 +17,7 @@ services:
     container_name: jar
     build: ./frontend
     environment:
-      - API_URL=http://api:9003/api/text_field_1/Abduljawad
+      - API_URL=http://13.53.235.85:9003/api/text_field_1/Abduljawad
     depends_on:
       - api
     ports:
