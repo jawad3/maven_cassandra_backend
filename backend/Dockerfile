@@ -11,6 +11,5 @@ RUN mvn -f /home/app/pom.xml clean package -DskipTests
 #
 FROM openjdk:11-jre-slim
 WORKDIR /app
-EXPOSE 9003
 COPY --from=build /home/app/target/spring-boot-cassandra-0.0.1-SNAPSHOT.jar /usr/local/lib/spring-boot-cassandra-0.0.1-SNAPSHOT.jar
 CMD ["java","-jar","/usr/local/lib/spring-boot-cassandra-0.0.1-SNAPSHOT.jar"]
