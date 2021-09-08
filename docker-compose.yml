@@ -10,7 +10,6 @@ services:
   #   depends_on:
   #     - cassandra
   #   networks:
-  #     - private_network
   #     - public_network
 
   webapp:
@@ -39,18 +38,17 @@ services:
         - ./backend/src/main/resources/data.cql:/schema.cql 
         - ./out/cassandra_data:/var/lib/cassandra
       networks:
-        - private_network
-
-
-
-  # cassandra-load-keyspace:
-  #     container_name: cassandra-load-keyspace
-  #     image: cassandra:latest
-  #     depends_on:
-  #       - cassandra
-  #     volumes:
-  #       - ./backend/src/main/resources/data.cql:/schema.cql 
-  #     command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+        - public_network
+        
+  cassandra-load-keyspace:
+      container_name: cassandra-load-keyspace
+      image: cassandra:latest
+      depends_on:
+        - cassandra
+      volumes:
+        - ./backend/src/main/resources/data.cql:/schema.cql 
+      command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+      networks:
+        - public_network
 networks:
-  private_network:
   public_network:      
