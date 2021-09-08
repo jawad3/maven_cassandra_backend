@@ -2,24 +2,24 @@ version: '3.5'
 
 services:
   
-  api:
-    container_name: node
-    ports:
-      - "9003:9003"
-    build: ./backend
-    depends_on:
-      - cassandra
-    networks:
-      - private_network
-      - public_network
+  # api:
+  #   container_name: node
+  #   ports:
+  #     - "9003:9003"
+  #   build: ./backend
+  #   depends_on:
+  #     - cassandra
+  #   networks:
+  #     - private_network
+  #     - public_network
 
   webapp:
     container_name: jar
     build: ./frontend
     environment:
       - API_URL=http://13.53.235.85:9003/api/text_field_1/Abduljawad
-    depends_on:
-      - api
+    # depends_on:
+    #   - api
     ports:
       - "3000:3000"
     networks:
