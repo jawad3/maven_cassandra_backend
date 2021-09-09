@@ -1,31 +1,6 @@
 version: '3.5'
 
 services:
-  
-  api:
-    container_name: mvn
-    ports:
-      - "9003:9003"
-    build: ./backend
-    depends_on:
-      - cassandra-load-keyspace
-      - cassandra
-    networks:
-      - public_network
-
-  webapp:
-    container_name: node
-    build: ./frontend
-    environment:
-      - API_URL=http://13.53.235.85:9003/api/text_field_1/Abduljawad
-    depends_on:
-      - api
-    ports:
-      - "3000:3000"
-    networks:
-      - public_network
-
-
   cassandra:
       image: cassandra:latest
       container_name: cassandra
@@ -51,5 +26,28 @@ services:
       command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
       networks:
         - public_network
+  api:
+    container_name: mvn
+    ports:
+      - "9003:9003"
+    build: ./backend
+    depends_on:
+      - cassandra-load-keyspace
+      - cassandra
+    networks:
+      - public_network
+
+  webapp:
+    container_name: node
+    build: ./frontend
+    environment:
+      - API_URL=http://13.53.235.85:9003/api/text_field_1/Abduljawad
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    networks:
+      - public_network
+
 networks:
   public_network:      
