@@ -8,9 +8,10 @@ services:
       - "9003:9003"
     build: ./backend
     depends_on:
+      - cassandra-load-keyspace
       - cassandra
     networks:
-      - host
+      - public_network
 
   webapp:
     container_name: node
