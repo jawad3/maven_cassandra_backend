@@ -41,7 +41,7 @@ services:
     container_name: node
     build: ./frontend
     environment:
-      - API_URL=http://13.53.235.85:9003/api/text_field_1/Abduljawad
+      - API_URL=http://13.53.139.205:9003/api/text_field_1/Abduljawad
     depends_on:
       - api
     ports:
