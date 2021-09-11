@@ -1,53 +1,129 @@
-version: '3.5'
+# version: '3.5'
 
+# services:
+#   cassandra:
+#       image: cassandra:latest
+#       container_name: cassandra
+#       ports:
+#         - "9042:9042"
+#       environment:
+#         - "MAX_HEAP_SIZE=256M"
+#         - "HEAP_NEWSIZE=128M"
+#       restart: always
+#       volumes:
+#         - ./backend/src/main/resources/data.cql:/schema.cql 
+#         - ./out/cassandra_data:/var/lib/cassandra
+#       networks:
+#         - public_network
+
+#   cassandra-load-keyspace:
+#       container_name: cassandra-load-keyspace
+#       image: cassandra:latest
+#       depends_on:
+#         - cassandra
+#       volumes:
+#         - ./backend/src/main/resources/data.cql:/schema.cql 
+#       command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+#       networks:
+#         - public_network
+#   api:
+#     container_name: mvn
+#     ports:
+#       - "9003:9003"
+#     build: ./backend
+#     depends_on:
+#       - cassandra-load-keyspace
+#       - cassandra
+#     networks:
+#       - public_network
+
+#   webapp:
+#     container_name: node
+#     build: ./frontend
+#     environment:
+#       - API_URL=http://13.53.139.205:9003/api/text_field_1/Abduljawad
+#     depends_on:
+#       - api
+#     ports:
+#       - "3000:3000"
+#     networks:
+#       - public_network
+version: "3.7"
 services:
-  cassandra:
-      image: cassandra:latest
-      container_name: cassandra
-      ports:
-        - "9042:9042"
-      environment:
-        - "MAX_HEAP_SIZE=256M"
-        - "HEAP_NEWSIZE=128M"
-      restart: always
-      volumes:
-        - ./backend/src/main/resources/data.cql:/schema.cql 
-        - ./out/cassandra_data:/var/lib/cassandra
-      networks:
-        - public_network
 
-  cassandra-load-keyspace:
-      container_name: cassandra-load-keyspace
-      image: cassandra:latest
-      depends_on:
-        - cassandra
-      volumes:
-        - ./backend/src/main/resources/data.cql:/schema.cql 
-      command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
-      networks:
-        - public_network
-  api:
-    container_name: mvn
-    ports:
-      - "9003:9003"
-    build: ./backend
+  backend:
+   container_name:  backend
+    build: 
+       context: ./cassandra-maven
+       args: 
+            JAR_FILE:  /spring-boot-cassandra-0.0.1-SNAPSHOT.jar
     depends_on:
-      - cassandra-load-keyspace
-      - cassandra
+      - cassandra 
     networks:
-      - public_network
+      - cass-host
 
-  webapp:
-    container_name: node
+  frontend:
     build: ./frontend
     environment:
-      - API_URL=http://13.53.139.205:9003/api/text_field_1/Abduljawad
+      - API_URL=http://backend:3001/data
     depends_on:
-      - api
+      -  backend
     ports:
       - "3000:3000"
     networks:
-      - public_network
+      - cass-host
 
-networks:
-  public_network:      
+  cassandra:
+    image: cassandra
+    container_name:  cassandra
+    networks:
+      - cass-host
+    ports:
+      - "9042:9042"
+    networks:
+      - cass-host
+
+networks: 
+  cass-host:
+    driver: bridge
+
+# networks:
+#   public_network:      
+version: "3.7"
+services:
+
+  backend:
+   container_name:  backend
+    build: 
+       context: ./cassandra-maven
+       args: 
+            JAR_FILE:  /spring-boot-cassandra-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - cassandra 
+    networks:
+      - cass-host
+
+  frontend:
+    build: ./frontend
+    environment:
+      - API_URL=http://backend:3001/data
+    depends_on:
+      -  backend
+    ports:
+      - "3000:3000"
+    networks:
+      - cass-host
+
+  cassandra:
+    image: cassandra
+    container_name:  cassandra
+    networks:
+      - cass-host
+    ports:
+      - "9042:9042"
+    networks:
+      - cass-host
+
+networks: 
+  cass-host:
+    driver: bridge
